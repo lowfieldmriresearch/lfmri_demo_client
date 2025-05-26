@@ -37,7 +37,7 @@ function App() {
           setError(null);
 
           // Fetch detailed region data from the backend, and the option of PT/FT
-          const response = await fetch(`http://localhost:5001/api/get-region-percentiles?region=${selectedRegion}&option=${selectedOption}`);
+          const response = await fetch(`https://lfmri-demo-server.onrender.com/api/get-region-percentiles?region=${selectedRegion}&option=${selectedOption}`);
           const data = await response.json();
           setDetailedRegionData(data); // Set the detailed data for the selected region
         } catch (err) {
@@ -69,7 +69,7 @@ function App() {
     formData.append('option', option);  // Pass the selectedOption to backend
   
     try {
-      const response = await fetch('http://localhost:5001/api/process-csv', {
+      const response = await fetch('https://lfmri-demo-server.onrender.com/api/process-csv', {
         method: 'POST',
         body: formData,
       });
