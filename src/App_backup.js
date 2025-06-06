@@ -38,9 +38,9 @@ function App() {
 
           // Fetch detailed region data from the backend, and the option of PT/FT
           // publish version,
-          const response = await fetch(`https://lfmri-demo-server.onrender.com/api/get-region-percentiles?region=${selectedRegion}&option=${selectedOption}`);
+          //const response = await fetch(`https://lfmri-demo-server.onrender.com/api/get-region-percentiles?region=${selectedRegion}&option=${selectedOption}`);
           // local debug,
-          //const response = await fetch(`http://localhost:5001/api/get-region-percentiles?region=${selectedRegion}&option=${selectedOption}`);
+          const response = await fetch(`http://localhost:5001/api/get-region-percentiles?region=${selectedRegion}&option=${selectedOption}`);
           const data = await response.json();
           setDetailedRegionData(data); // Set the detailed data for the selected region
         } catch (err) {
@@ -72,7 +72,7 @@ function App() {
     formData.append('option', option);  // Pass the selectedOption to backend
   
     try {
-      const response = await fetch('https://lfmri-demo-server.onrender.com', {
+      const response = await fetch('http://localhost:5001/api/process-csv', {
         method: 'POST',
         body: formData,
       });
@@ -295,49 +295,6 @@ function App() {
     );
   };
 
-  // function to prepare computed results to download,
-const downloadCSV = () => {
-  if (!percentiles || Object.keys(percentiles).length === 0) return;
-
-  // Prepare CSV header
-  const header = ['Region', 'Percentile'];
-  
-  // Prepare rows
-  const rows = Object.entries(percentiles).map(([region, data]) => {
-    const regionPercentiles = data[0]; // your structure seems to have an array with one object
-    return [
-      region,
-      regionPercentiles.inputPercentile ?? '',
-       // note: use inputVolume as you named it
-    ];
-  });
-
-  // Build CSV content
-  const csvContent =
-    [header, ...rows]
-      .map(row => row.join(','))
-      .join('\n');
-
-  // Create a Blob and a temporary download link
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-
-  const now = new Date();
-  const timestamp = now.toISOString().replace(/[:.-]/g, '_'); // Replace characters not safe in filenames
-  const csvfilename = `percentiles_${selectedOption}_${timestamp}.csv`;
-
-  const link = document.createElement('a');
-  link.href = url;
-  link.setAttribute('download', csvfilename);
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
-};
-
-
-
-
  // Handle the PT/FT toggle change
  const handleToggleChange = (event) => {
   setSelectedOption(event.target.value); // Set PT or FT based on toggle
@@ -371,8 +328,6 @@ return (
   </button>
 </div>
 
-
-
       {/* File Upload */}
       <input
         type="file"
@@ -380,14 +335,6 @@ return (
         onChange={handleFileUpload}
         className="w-full py-2 px-4 border border-gray-300 rounded-lg text-gray-800 mb-6"
       />
-
-<a
-  href="/example_input_fullterm.csv"
-  download
-  className="inline-block ml-10 mb-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
->
-  ⬇️ Download Example Input
-</a>
 
       {/* Loading Indicator */}
       {loading && <p>Loading...</p>}
@@ -399,29 +346,14 @@ return (
       <div className="mb-12 w-[1400px] mx-auto">
         {Object.keys(percentiles).length > 0 && renderBarPlot()}
       </div>
-      {/* Download Button (Only show if percentiles exist) */}
-{Object.keys(percentiles).length > 0 && (
-  <div className="mt-8  ml-10">
-    <button
-      onClick={downloadCSV}
-      className="px-4 py-2 bg-emerald-500 text-white rounded hover:bg-blue-700"
-    >
-      ⬇️ Download Percentiles CSV
-    </button>
-  </div>
-)}
 
       {/* Display Detailed Plot (Percentiles for Selected Region) */}
       <div className="mb-8 w-[1400px] mx-auto">
         {renderDetailedPlot()}
       </div>
-
-      
-
     </div>
   </div>
 );
-
 }
 
 export default App;
