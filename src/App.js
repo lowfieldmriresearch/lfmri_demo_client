@@ -373,13 +373,16 @@ return (
 
 
 
-      {/* File Upload */}
-      <input
-        type="file"
-        accept=".csv"
-        onChange={handleFileUpload}
-        className="w-full py-2 px-4 border border-gray-300 rounded-lg text-gray-800 mb-6"
-      />
+<label className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded cursor-pointer hover:bg-blue-700">
+  Upload CSV
+  <input
+    type="file"
+    accept=".csv"
+    onChange={handleFileUpload}
+    className="hidden"
+  />
+</label>
+
 
 <a
   href="/example_input_fullterm.csv"
