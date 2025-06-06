@@ -72,7 +72,7 @@ function App() {
     formData.append('option', option);  // Pass the selectedOption to backend
   
     try {
-      const response = await fetch('https://lfmri-demo-server.onrender.com', {
+      const response = await fetch('https://lfmri-demo-server.onrender.com/api/process-csv', {
         method: 'POST',
         body: formData,
       });
